@@ -15,11 +15,13 @@ let List = React.createClass({
       };
       return React.createElement(Item, props)
     })
-    let button = React.createElement("button", {onClick: reorderCapitals.bind(this)}, "Reverse order")
+    let button = React.createElement("button", {onClick: squareNumbers.bind(this)}, "^2")
     return React.createElement("div", {}, [button, items])
   }
 });
 
-function reorderCapitals(order) {
-  this.setState({numbers: this.state.numbers.reverse()})
+function squareNumbers(order) {
+  this.setState({
+    numbers: this.state.numbers.map(num => num * num)
+  })
 }
