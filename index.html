@@ -11,10 +11,12 @@
   <body>
     <div id="app"></div>
     <script>
-      ReactDOM.render(
-        React.createElement(List, {}),
-        document.getElementById("app")
-      );
+      debugger // Step 1: Ask React to create an element.
+      const element = React.createElement(List, {});
+      const container = document.getElementById("app");
+
+      debugger // Step 2: Tell React to render the element into the container
+      ReactDOM.render(element, container);
     </script>
   </body>
 </html>

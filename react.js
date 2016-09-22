@@ -3488,7 +3488,7 @@ module.exports = HTMLDOMPropertyConfig;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule KeyEscapeUtils
- * 
+ *
  */
 
 'use strict';
@@ -5971,6 +5971,8 @@ var ReactCompositeComponentMixin = {
 
     // Initialize the public class
     var doConstruct = shouldConstruct(Component);
+    if (this._currentElement.type.displayName == "TopLevelWrapper")
+      debugger // Step 4c: Create the TopLevelWrapper instance
     var inst = this._constructComponent(doConstruct, publicProps, publicContext, updateQueue);
     var renderedElement;
 
@@ -6002,6 +6004,11 @@ var ReactCompositeComponentMixin = {
       "development" !== 'production' ? warning(inst.props === undefined || !propsMutated, '%s(...): When calling super() in `%s`, make sure to pass ' + 'up the same props that your component\'s constructor was passed.', componentName, componentName) : void 0;
     }
 
+    if (this._currentElement.type.displayName == "TopLevelWrapper")
+      debugger // Step 4d: React tells the TopLevelWrapper what it renders to by setting the props property equal to the List element that was passed in as an argument to ReactDOM.render().
+    if (this._currentElement.type.displayName == "List")
+      debugger // Step 5e: React sets the props and context on the List instance.
+
     // These should be set up in the constructor, but as a convenience for
     // simpler class abstractions, we set them up after the fact.
     inst.props = publicProps;
@@ -6027,6 +6034,8 @@ var ReactCompositeComponentMixin = {
       "development" !== 'production' ? warning(typeof inst.componentWillRecieveProps !== 'function', '%s has a method called ' + 'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?', this.getName() || 'A component') : void 0;
     }
 
+    if (this._currentElement.type.displayName == "List")
+      debugger // Step 5f: React sets the initial state on the List instance.
     var initialState = inst.state;
     if (initialState === undefined) {
       inst.state = initialState = null;
@@ -6041,6 +6050,10 @@ var ReactCompositeComponentMixin = {
     if (inst.unstable_handleError) {
       markup = this.performInitialMountWithErrorHandling(renderedElement, hostParent, hostContainerInfo, transaction, context);
     } else {
+      if (this._currentElement.type.displayName == "TopLevelWrapper")
+        debugger // Step 5a: Start rendering the TopLevelWrapper instance.
+      if (this._currentElement.type.displayName == "List")
+        debugger // Step 6a: Start figuring out what DOM to display for List.
       markup = this.performInitialMount(renderedElement, hostParent, hostContainerInfo, transaction, context);
     }
 
@@ -6162,11 +6175,15 @@ var ReactCompositeComponentMixin = {
 
     // If not a stateless component, we now render
     if (renderedElement === undefined) {
+      if (this._currentElement.type.displayName == "TopLevelWrapper")
+        debugger // Step 5b: Call render on the TopLevelWrapper
       renderedElement = this._renderValidatedComponent();
     }
 
     var nodeType = ReactNodeTypes.getType(renderedElement);
     this._renderedNodeType = nodeType;
+    if (this._currentElement.type.displayName == "TopLevelWrapper")
+      debugger // Step 5d: Start instantiating the List element.
     var child = this._instantiateReactComponent(renderedElement, nodeType !== ReactNodeTypes.EMPTY /* shouldHaveDebugID */
     );
     this._renderedComponent = child;
@@ -6611,6 +6628,7 @@ var ReactCompositeComponentMixin = {
         ReactInstrumentation.debugTool.onBeginLifeCycleTimer(this._debugID, 'render');
       }
     }
+    debugger // Step 6b: Call render on List
     var renderedComponent = inst.render();
     if ("development" !== 'production') {
       if (this._debugID !== 0) {
@@ -11342,7 +11360,7 @@ module.exports = ReactEventListener;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule ReactFeatureFlags
- * 
+ *
  */
 
 'use strict';
@@ -11896,6 +11914,7 @@ function mountComponentIntoNode(wrapperInstance, container, transaction, shouldR
     console.time(markerName);
   }
 
+  debugger // Step 4b: Call mount on the TopLevelWrapper
   var markup = ReactReconciler.mountComponent(wrapperInstance, transaction, null, ReactDOMContainerInfo(wrapperInstance, container), context);
 
   if (markerName) {
@@ -11992,6 +12011,7 @@ if ("development" !== 'production') {
   TopLevelWrapper.displayName = 'TopLevelWrapper';
 }
 TopLevelWrapper.prototype.render = function () {
+  debugger // Step 5c: Return the List element that should be rendered.
   // this.props is actually a ReactElement
   return this.props;
 };
@@ -12070,6 +12090,7 @@ var ReactMount = {
     !(container && (container.nodeType === ELEMENT_NODE_TYPE || container.nodeType === DOC_NODE_TYPE || container.nodeType === DOCUMENT_FRAGMENT_NODE_TYPE)) ? "development" !== 'production' ? invariant(false, '_registerComponent(...): Target container is not a DOM element.') : _prodInvariant('37') : void 0;
 
     ReactBrowserEventEmitter.ensureScrollValueMonitoring();
+    debugger // Step 4a: Start creating an instance of the TopLevelWrapper
     var componentInstance = instantiateReactComponent(nextElement, false);
 
     // The initial render is synchronous but any updates that happen during
@@ -12115,6 +12136,7 @@ var ReactMount = {
 
     "development" !== 'production' ? warning(!container || !container.tagName || container.tagName.toUpperCase() !== 'BODY', 'render(): Rendering components directly into document.body is ' + 'discouraged, since its children are often manipulated by third-party ' + 'scripts and browser extensions. This may lead to subtle ' + 'reconciliation issues. Try rendering into a container element created ' + 'for your app.') : void 0;
 
+    debugger // Step 3: Create an element for the TopLevelWrapper
     var nextWrappedElement = ReactElement(TopLevelWrapper, null, null, null, null, null, nextElement);
 
     var nextContext;
@@ -12788,7 +12810,7 @@ module.exports = ReactMultiChildUpdateTypes;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule ReactNodeTypes
- * 
+ *
  */
 
 'use strict';
@@ -14186,7 +14208,7 @@ module.exports = ReactServerRenderingTransaction;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule ReactServerUpdateQueue
- * 
+ *
  */
 
 'use strict';
@@ -17093,7 +17115,7 @@ module.exports = ViewportMetrics;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule accumulateInto
- * 
+ *
  */
 
 'use strict';
@@ -17152,7 +17174,7 @@ module.exports = accumulateInto;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule adler32
- * 
+ *
  */
 
 'use strict';
@@ -17610,7 +17632,7 @@ module.exports = findDOMNode;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule flattenChildren
- * 
+ *
  */
 
 'use strict';
@@ -17686,7 +17708,7 @@ module.exports = flattenChildren;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule forEachAccumulated
- * 
+ *
  */
 
 'use strict';
@@ -17983,7 +18005,7 @@ module.exports = getHostComponentFromComposite;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule getIteratorFn
- * 
+ *
  */
 
 'use strict';
@@ -18444,7 +18466,7 @@ module.exports = isEventSupported;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule isTextInputElement
- * 
+ *
  */
 
 'use strict';
@@ -18562,7 +18584,7 @@ module.exports = quoteAttributeValueForBrowser;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule reactProdInvariant
- * 
+ *
  */
 'use strict';
 
@@ -19541,7 +19563,7 @@ module.exports = camelizeStyleName;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  */
 
 var isTextNode = _dereq_(166);
@@ -19792,7 +19814,7 @@ module.exports = createNodesFromMarkup;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  */
 
 function makeEmptyFunction(arg) {
@@ -20349,7 +20371,7 @@ module.exports = mapObject;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  * @typechecks static-only
  */
 
@@ -20437,7 +20459,7 @@ module.exports = performanceNow;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @typechecks
- * 
+ *
  */
 
 /*eslint-disable no-self-compare */
